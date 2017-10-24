@@ -22,6 +22,7 @@ function ObtenerCotizacionDolar()
 	}
 
 	var cotizDolar = parseFloat( localStorage.getItem('cotizDolar') );
+	return cotizDolar;
 }
 
 function FormatearImporte( cantidad )
