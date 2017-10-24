@@ -3,6 +3,7 @@
 // @namespace   Zombie
 // @description Ebay en pesos
 // @include     https://www.ebay.com/itm/*
+// @require     https://raw.githubusercontent.com/KanonZombie/userscripts/master/funciones.js
 // @version     1
 // @grant       none
 // ==/UserScript==
@@ -17,29 +18,8 @@ var shippingTXT = '';
 
 var noshipping = false;
 
-var fechaConsulta = new Date( localStorage.getItem('fechaConsulta') );
-var today = new Date();
+var cotizDolar = ObtenerCotizacionDolar();
 
-fechaConsulta.setHours(0,0,0,0);
-today.setHours(0,0,0,0);
-
-if ( fechaConsulta == null || fechaConsulta <  today )
-{
-  console.log( "guardando" );
-
-  $.ajax({
-      url: "https://openexchangerates.org/api/latest.json?app_id=7a53d03067514dce8d68ccfbacf276c4",
-      async:false
-    }).done(function( data ) {
-      alert( "Actualizando cotizacion dolar" );
-        //cotizDolar =  ;
-        localStorage.setItem('fechaConsulta', today);
-        localStorage.setItem('cotizDolar', parseFloat( data["rates"]["ARS"] ));
-      });
-}
-
-var cotizDolar = parseFloat( localStorage.getItem('cotizDolar') );
-//var cotizDolar = 1;
 var precioConvertido = $('#convbinPrice').contents();
 
 if ( precioConvertido.length > 0 )
@@ -144,18 +124,4 @@ console.log($('#vi-mskumap-none'));
 if (noshipping)
 {
   $('#vi-mskumap-none').append( '<div class="mp-prc-red" style="font-size: 75%">No hay info de shipping</span></div>' )
-}
-
-//$('#vi-mskumap-none').append( '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 ">Art: <span style="white-space: nowrap;font-weight:bold;">$' + precio * 18 + '<span></span></div>' )
-//$('#vi-mskumap-none').append( '<div class="w2b-red">No hay info de shipping</span></div>' )
-//$('#vi-mskumap-none').append( '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 ">Ship: <span id="convbinPrice" style="white-space: nowrap;font-weight:bold;">$' + precioShipping * 18 + '<span></span></div>' )
-//$('#vi-mskumap-none').append( '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 ">Adu: <span style="white-space: nowrap;font-weight:bold;">$' + impuesto * 18 + '<span></span></div>' )
-//$('#vi-mskumap-none').append( '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 ">Total: <span style="white-space: nowrap;font-weight:bold;">$' + total * 18 + '<span></span></div>' )
-
-//$('table.fr > tbody:nth-child(1) > tr td div.normal').parent().append('<div>1000</div>')
-
-function FormatearImporte( cantidad )
-{
-console.log(cantidad);
-  return cantidad.toFixed(2);
 }
