@@ -31,8 +31,15 @@ else
   //#prcIsum_bidPrice
   if ( $('#mm-saleDscPrc').length > 0 )
     {
-console.log($('#mm-saleDscPrc'));
+      if ( $('#convbidPrice').length > 0 )
+      {
+        console.log( $('#convbidPrice').contents()[0] );
+        precioTXT = $('#convbidPrice').contents()[0].textContent;
+      }
+      else
+      {
         precioTXT = $('#mm-saleDscPrc').html();
+      }
     }
   else
     {
