@@ -11,8 +11,6 @@
 
 var cotizDolar = ObtenerCotizacionDolar();
 
-alert( window.location.href.indexOf('https://krikzz.com/store/')>=0 );
-
 if ( window.location.href.indexOf('https://krikzz.com/store/')>=0 )
 {
   $('.right-block .content_price .product-price').each(function( index ) {
