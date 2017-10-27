@@ -10,15 +10,25 @@ function ObtenerCotizacionDolar()
 	{
 	  console.log( "guardando" );
 
-	  $.ajax({
-		  url: "https://openexchangerates.org/api/latest.json?app_id=7a53d03067514dce8d68ccfbacf276c4",
-		  async:false
-		}).done(function( data ) {
-		  alert( "Actualizando cotizacion dolar" );
-			//cotizDolar =  ;
-			localStorage.setItem('fechaConsulta', today);
-			localStorage.setItem('cotizDolar', parseFloat( data["rates"]["ARS"] ));
-		  });
+		var keyGuardada = localStorage.getItem('apiKey');
+
+		if ( keyGuardada )
+		{
+			$.ajax({
+				url: "https://openexchangerates.org/api/latest.json?app_id=" + keyGuardada,
+				async:false
+			}).done(function( data ) {
+				alert( "Actualizando cotizacion dolar" );
+				//cotizDolar =  ;
+				localStorage.setItem('fechaConsulta', today);
+				localStorage.setItem('cotizDolar', parseFloat( data["rates"]["ARS"] ));
+				});
+		}
+		else
+		{
+			console.log( "Api Key no configurada. seteando config default" );
+			localStorage.setItem('cotizDolar', 17.50 );
+		}
 	}
 
 	var cotizDolar = parseFloat( localStorage.getItem('cotizDolar') );
