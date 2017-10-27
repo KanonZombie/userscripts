@@ -10,6 +10,15 @@
 
 // #isum-shipCostDiv
 
+$('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="javascript:void(0)" onclick="Configurar()">Config</a></li>')
+
+unsafeWindow.Configurar = function()
+{
+	var keyGuardada = localStorage.getItem('apiKey');
+  var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
+  localStorage.setItem('apiKey', apiKey);
+}
+
 var precio = 0;
 var precioTXT = '';
 
