@@ -4,140 +4,197 @@
 // @description Ebay en pesos
 // @include     https://www.ebay.com/itm/*
 // @require     https://raw.githubusercontent.com/KanonZombie/userscripts/master/funciones.js
-// @version     1
+// @require     https://code.jquery.com/jquery-2.2.4.js
+// @version     1.01
 // @grant       none
 // ==/UserScript==
 
-// #isum-shipCostDiv
-
-$('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="javascript:void(0)" onclick="Configurar()">Config</a></li>')
-
-unsafeWindow.Configurar = function()
+function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
   localStorage.setItem('apiKey', apiKey);
 }
 
-var precio = 0;
-var precioTXT = '';
+exportFunction(Configurar, window, {defineAs:'Configurar'});
 
-var precioShipping = 0;
-var shippingTXT = '';
-
-var noshipping = false;
-
-var cotizDolar = ObtenerCotizacionDolar();
-
-var precioConvertido = $('#convbinPrice').contents();
-
-if ( precioConvertido.length > 0 )
+function OverrideShipping()
 {
-  precioTXT = precioConvertido[0].textContent
-}
-else
-{
-  //#prcIsum_bidPrice
-  if ( $('#mm-saleDscPrc').length > 0 )
-    {
-      if ( $('#convbidPrice').length > 0 )
-      {
-        console.log( $('#convbidPrice').contents()[0] );
-        precioTXT = $('#convbidPrice').contents()[0].textContent;
-      }
-      else
-      {
-        precioTXT = $('#mm-saleDscPrc').html();
-      }
-    }
-  else
-    {
-      if ( $('#prcIsum').length > 0 )
-      {
-        precioTXT = $('#prcIsum').attr('content');
-      }
-      else
-      {
-        precioTXT = $('#prcIsum_bidPrice').attr('content');
-      }
-    }
+  var item_id = $('#descItemNumber').html();
+  var clave = item_id + '_envio';
+  var shippingGuardado = localStorage.getItem(clave);
+  var shipping = prompt('Shipping guardado:', shippingGuardado);
+  localStorage.setItem(clave, shipping);
+  //location.reload(); 
 }
 
-console.log(precioTXT);
+exportFunction(OverrideShipping, window, {defineAs:'OverrideShipping'});
 
-var precioShippingConv = $('#convetedPriceId').html();
-
-if ( precioShippingConv != null )
+function QuitarShipping()
 {
-  shippingTXT = $('#convetedPriceId').html().replace(/^US \$/, "").replace(/,/g,'');
-  console.log(shippingTXT);
+  var item_id = $('#descItemNumber').html();
+  var clave = item_id + '_envio';
+	localStorage.removeItem(clave);
+  //location.reload(); 
 }
-else
-{
-    if ( $('#fshippingCost').contents().length > 1 )
-    {
-      if ( $('#fshippingCost').contents()[1].textContent == "FREE" )
-      {
-        shippingTXT = "0";
-      }
-      else
-      {
-        shippingTXT = $('#fshippingCost').contents()[1].textContent;
-      }
-    }
-  else
-    {
-      shippingTXT = '0';
-      noshipping = true;
-    }
-}
-console.log(shippingTXT);
 
-precio = parseFloat( precioTXT.replace(/^US \$/, "").replace().replace(/,/g,'') );
-precioShipping = parseFloat( shippingTXT.replace(/^\$/, "").replace().replace(/,/g,'') );
+exportFunction(QuitarShipping, window, {defineAs:'QuitarShipping'});
+
+function AgregarNota()
+{
+  var item_id = $('#descItemNumber').html();
+  var clave = item_id + '_nota';
+  var shippingGuardado = localStorage.getItem(clave);
+  var shipping = prompt('Nota:', shippingGuardado);
+  localStorage.setItem(clave, shipping);
+}
+
+exportFunction(AgregarNota, window, {defineAs:'AgregarNota'});
+
+$('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="javascript:void(0)" onclick="window.Configurar()">Config</a></li>')
 
 var htmlARS = '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 "><table width="100%">';
-
-htmlARS += '<tr><td colspan=2>Precios ARS - dolar a  $' + FormatearImporte( cotizDolar ) +'</td></tr>';
-htmlARS += '<tr><td>Item:</td><td align="right">' + FormatearImporte( precio * cotizDolar ) + '</td></tr>';
-
-if (!noshipping)
-{
-  htmlARS += '<tr><td>Envío:</td><td align="right">' + FormatearImporte( precioShipping * cotizDolar ) + '</td></tr>';
-}
-
-var impuesto = ( ( precio + precioShipping)  /2 );
-htmlARS += '<tr><td>Impuesto:</td><td align="right">' + FormatearImporte( impuesto * cotizDolar ) + '</td></tr>';
-
-var total = parseFloat(Math.round( (precio + precioShipping + impuesto ) * 100) / 100).toFixed(2);
-htmlARS += '<tr><td>Total:</td><td align="right">' + FormatearImporte( total * cotizDolar ) + '</td></tr>';
-
-if (!noshipping)
-{
-  htmlARS += '<tr><td>Total sin shipping:</td><td align="right">' + FormatearImporte( precio * 1.5 * cotizDolar ) + '</td></tr>';
-}
-
+htmlARS += '<tr><td colspan=2>Precios ARS - dolar a  $<span id="zombie_cotiz">0</span></td></tr>';
+htmlARS += '<tr><td>Item:</td><td align="right"><div id="zombie_precio">0</div></td></tr>';
+htmlARS += '<tr><td>Envío:</td><td align="right"><div id="zombie_envio">0</div></td></tr>';
+htmlARS += '<tr><td>Impuesto:</td><td align="right"><div id="zombie_aduana">0</div></td></tr>';
+htmlARS += '<tr><td>Total:</td><td align="right"><div id="zombie_total">0</div></td></tr>';
+htmlARS += '<tr><td>Total sin shipping:</td><td align="right"><div id="zombie_totalNoShip">0</div></td></tr>';
 htmlARS += '</table></div>';
-console.log(htmlARS);
+htmlARS += '<div class="mp-prc-red" style="font-size: 75%"><a href="javascript:void(0)" onclick="window.OverrideShipping()">Override Shipping</a> - <a href="javascript:void(0)" onclick="window.QuitarShipping()">Eliminar</a></div>';
+htmlARS += '<div id="zombie_nota" style="font-size: 75%"></div>';
+htmlARS += '<div class="mp-prc-red" style="font-size: 75%"><a href="javascript:void(0)" onclick="window.AgregarNota()">Agregar Nota</a></div>';
+htmlARS += '<div id="zombie_mensajeShipping" class="mp-prc-red" style="font-size: 75%"></div>';
 
 if ( $('#bb_bdp').length>0 )
-  {
-    $('#bb_bdp').append( htmlARS );
-  }
-else
-  {
-    if ( $('#vi-mskumap-none').length>0 )
-    {
-      $('#vi-mskumap-none').append( htmlARS );
-    }
-    else
-    {
-      $('.vi-price').append( htmlARS );
-    }
-  }
-
-console.log($('#vi-mskumap-none'));
-if (noshipping)
 {
-  $('#vi-mskumap-none').append( '<div class="mp-prc-red" style="font-size: 75%">No hay info de shipping</span></div>' )
+  $('#bb_bdp').append( htmlARS );
 }
+else
+{
+  if ( $('#vi-mskumap-none').length>0 )
+  {
+    $('#vi-mskumap-none').append( htmlARS );
+  }
+  else
+  {
+    $('.vi-price').append( htmlARS );
+  }
+}
+
+setInterval(AplicarPrecio, 1000);
+
+function AplicarPrecio()
+{
+  var precio = 0;
+  var precioTXT = '';
+  var precioShipping = 0;
+  var shippingTXT = '';
+  var noshipping = false;
+  
+  var cotizDolar = ObtenerCotizacionDolar();
+  $('#zombie_cotiz').html( FormatearImporte( cotizDolar ) );
+  
+  var precioConvertido = $('#convbinPrice').contents();
+  
+  if ( precioConvertido.length > 0 )
+  {
+    precioTXT = precioConvertido[0].textContent
+  }
+  else
+  {
+    if ( $('#mm-saleDscPrc').length > 0 )
+      {
+        if ( $('#convbidPrice').length > 0 )
+        {
+          precioTXT = $('#convbidPrice').contents()[0].textContent;
+        }
+        else
+        {
+          precioTXT = $('#mm-saleDscPrc').html();
+        }
+      }
+    else
+      {
+        if ( $('#prcIsum').length > 0 )
+        {
+          precioTXT = $('#prcIsum').attr('content');
+        }
+        else
+        {
+          precioTXT = $('#prcIsum_bidPrice').attr('content');
+        }
+      }
+  }
+  
+  var precioShippingConv = $('#convetedPriceId').html();
+  
+  if ( precioShippingConv != null )
+  {
+    shippingTXT = $('#convetedPriceId').html().replace(/^US \$/, "").replace(/,/g,'');
+  }
+  else
+  {
+      if ( $('#fshippingCost').contents().length > 1 )
+      {
+        if ( $('#fshippingCost').contents()[1].textContent == "FREE" )
+        {
+          shippingTXT = "0";
+        }
+        else
+        {
+          shippingTXT = $('#fshippingCost').contents()[1].textContent;
+        }
+      }
+    else
+      {
+        shippingTXT = '0';
+        noshipping = true;
+      }
+  }
+  
+  precio = parseFloat( precioTXT.replace(/^US \$/, "").replace().replace(/,/g,'') );
+  console.log( precio );
+  precioShipping = parseFloat( shippingTXT.replace(/^\$/, "").replace().replace(/,/g,'') );
+  
+  var item_id = $('#descItemNumber').html();
+  var clave = item_id + '_envio';
+  var shippingGuardado = localStorage.getItem(clave);
+  if (shippingGuardado)
+  {
+    //localStorage.setItem( item_id + '_envio', parseFloat( 93 ) );
+    precioShipping = parseFloat( localStorage.getItem( item_id + '_envio' ) );
+    noshipping = false;
+  }
+  
+  $('#zombie_precio').html( FormatearImporte( precio * cotizDolar ) );
+  if (!noshipping)
+  {
+    $('#zombie_envio').html( FormatearImporte( precioShipping * cotizDolar ) );
+  }
+  
+  var impuesto = ( ( precio + precioShipping)  /2 );
+  $('#zombie_aduana').html( FormatearImporte( impuesto * cotizDolar ) );
+  
+  var total = parseFloat(Math.round( (precio + precioShipping + impuesto ) * 100) / 100).toFixed(2);
+  $('#zombie_total').html( FormatearImporte( total * cotizDolar ) );
+  
+  if (!noshipping)
+  {
+    $('#zombie_totalNoShip').html( FormatearImporte( precio * 1.5 * cotizDolar ) );
+  }
+  
+  if (noshipping)
+  {
+    $('#zombie_mensajeShipping').html( "No hay info de shipping" );
+  }
+  
+  var claveNota = item_id + '_nota';
+  var notaGuardado = localStorage.getItem(claveNota);
+  if (notaGuardado)
+  {
+    $('#zombie_nota').html( notaGuardado );
+  }  
+}
+
+
