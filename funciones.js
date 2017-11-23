@@ -8,8 +8,6 @@ function ObtenerCotizacionDolar()
 
 	if ( fechaConsulta == null || fechaConsulta <  today )
 	{
-	  console.log( "guardando" );
-
 		var keyGuardada = localStorage.getItem('apiKey');
 
 		if ( keyGuardada )
@@ -18,8 +16,7 @@ function ObtenerCotizacionDolar()
 				url: "https://openexchangerates.org/api/latest.json?app_id=" + keyGuardada,
 				async:false
 			}).done(function( data ) {
-				alert( "Actualizando cotizacion dolar" );
-				//cotizDolar =  ;
+				console.log( "Actualizando cotizacion dolar" );
 				localStorage.setItem('fechaConsulta', today);
 				localStorage.setItem('cotizDolar', parseFloat( data["rates"]["ARS"] ));
 				});
@@ -37,6 +34,5 @@ function ObtenerCotizacionDolar()
 
 function FormatearImporte( cantidad )
 {
-	console.log(cantidad);
 	return cantidad.toFixed(2);
 }

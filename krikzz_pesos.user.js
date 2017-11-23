@@ -5,6 +5,7 @@
 // @include     https://krikzz.com/store/
 // @include     https://krikzz.com/store/order
 // @require     https://raw.githubusercontent.com/KanonZombie/userscripts/master/funciones.js
+// @require     https://code.jquery.com/jquery-2.2.4.js
 // @version     1
 // @grant       none
 // ==/UserScript==
@@ -12,8 +13,13 @@ function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
-  localStorage.setItem('apiKey', apiKey);
+  if (apiKey)
+  {
+    localStorage.setItem('apiKey', apiKey);
+  }
 }
+
+exportFunction(Configurar, window, {defineAs:'Configurar'});
 
 $('div.header_user_info').append('<a href="javascript:void(0)" onclick="Configurar()">Config</a>');
 

@@ -13,7 +13,10 @@ function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
-  localStorage.setItem('apiKey', apiKey);
+  if (apiKey)
+  {
+    localStorage.setItem('apiKey', apiKey);
+  }
 }
 
 exportFunction(Configurar, window, {defineAs:'Configurar'});
@@ -45,8 +48,11 @@ function AgregarNota()
   var item_id = $('#descItemNumber').html();
   var clave = item_id + '_nota';
   var shippingGuardado = localStorage.getItem(clave);
-  var shipping = prompt('Nota:', shippingGuardado);
-  localStorage.setItem(clave, shipping);
+  var anotacion = prompt('Nota:', shippingGuardado);
+  if (anotacion)
+  {
+    localStorage.setItem(clave, anotacion);
+  }
 }
 
 exportFunction(AgregarNota, window, {defineAs:'AgregarNota'});
@@ -162,7 +168,6 @@ function AplicarPrecio()
   var shippingGuardado = localStorage.getItem(clave);
   if (shippingGuardado)
   {
-    //localStorage.setItem( item_id + '_envio', parseFloat( 93 ) );
     precioShipping = parseFloat( localStorage.getItem( item_id + '_envio' ) );
     noshipping = false;
   }
@@ -196,4 +201,3 @@ function AplicarPrecio()
     $('#zombie_nota').html( notaGuardado );
   }  
 }
-
