@@ -82,7 +82,7 @@ else
   }
 }
 
-setInterval(AplicarPrecio, 1000);
+setInterval(AplicarPrecio, 100);
 
 function AplicarPrecio()
 {
@@ -196,5 +196,4 @@ function AplicarPrecio()
     $('#zombie_nota').html( notaGuardado );
   }  
 }
-
 

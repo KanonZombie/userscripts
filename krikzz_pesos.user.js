@@ -8,14 +8,14 @@
 // @version     1
 // @grant       none
 // ==/UserScript==
-$('div.header_user_info').append('<a href="javascript:void(0)" onclick="Configurar()">Config</a>')
-
-unsafeWindow.Configurar = function()
+function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
   localStorage.setItem('apiKey', apiKey);
 }
+
+$('div.header_user_info').append('<a href="javascript:void(0)" onclick="Configurar()">Config</a>');
 
 var cotizDolar = ObtenerCotizacionDolar();
 
