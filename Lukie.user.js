@@ -13,7 +13,10 @@ function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
-  localStorage.setItem('apiKey', apiKey);
+  if (apiKey)
+  {
+    localStorage.setItem('apiKey', apiKey);
+  }
 }
 
 exportFunction(Configurar, window, {defineAs:'Configurar'});

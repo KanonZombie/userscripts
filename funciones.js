@@ -23,8 +23,12 @@ function ObtenerCotizacionDolar()
 		}
 		else
 		{
-			console.log( "Api Key no configurada. seteando config default" );
-			localStorage.setItem('cotizDolar', 17.50 );
+			var cotizDolar = parseFloat( localStorage.getItem('cotizDolar') );
+			if ( !cotizDolar )
+			{
+				console.log( "Api Key y cotizacion no configurada. Seteando config default" );
+				localStorage.setItem('cotizDolar', 20 );
+			}
 		}
 	}
 
