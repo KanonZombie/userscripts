@@ -116,8 +116,8 @@ $('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="javascript:v
 var htmlARS = '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 "><table width="100%">';
 //var htmlARS = '<div class="si-cnt si-cnt-eu vi-grBr vi-padn0 c-std"><table width="100%" class="si-inner">';
 htmlARS += '<tr><td colspan=3>Precios ARS - dolar a  $<span id="zombie_cotiz">0</span></td></tr>';
-htmlARS += '<tr><td>Item:</td><td align="right"><div id="zombie_precio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverridePrecio()">?</a> <a href="javascript:void(0)" onclick="window.QuitarPrecio()">?</a></td></tr>';
-htmlARS += '<tr><td>Env�o:</td><td align="right"><div id="zombie_envio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverrideShipping()">?</a> <a href="javascript:void(0)" onclick="window.QuitarShipping()">?</a></td></tr>';
+htmlARS += '<tr><td>Item:</td><td align="right"><div id="zombie_precio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverridePrecio()">➕</a> <a href="javascript:void(0)" onclick="window.QuitarPrecio()">❌</a></td></tr>';
+htmlARS += '<tr><td>Envío:</td><td align="right"><div id="zombie_envio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverrideShipping()">➕</a> <a href="javascript:void(0)" onclick="window.QuitarShipping()">❌</a></td></tr>';
 htmlARS += '<tr><td>Impuesto:</td><td align="right"><div id="zombie_aduana">0</div></td><td></td></tr>';
 htmlARS += '<tr><td>Total:</td><td align="right"><div id="zombie_total">0</div></td><td></td></tr>';
 //htmlARS += '<tr><td>Total sin shipping:</td><td align="right"><div id="zombie_totalNoShip">0</div></td><td></td></tr>';
