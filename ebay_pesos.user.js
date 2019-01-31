@@ -9,14 +9,36 @@
 // @grant				GM.xmlHttpRequest
 // ==/UserScript==
 
+var linkScript = 'https://raw.githubusercontent.com/KanonZombie/userscripts/master/ebay_pesos.user.js';
+
+GM.xmlHttpRequest({
+  method: "GET",
+  url: linkScript,
+  onload: function(response)
+  {
+     var ultimaVersion = parseFloat( /\/\/ @version     (\d{0,9}\.\d{0,9})/.exec( response.responseText)[1] )
+     if (ultimaVersion > 1.01)
+     {
+		     console.log( "Esta disponible una nueva version del script (" + ultimaVersion +")");
+				 $('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="'+linkScript+'">update: '+ultimaVersion+'</a></li>')
+       
+     }
+  }
+}
+);
+
+
 function Configurar()
 {
 	var keyGuardada = localStorage.getItem('apiKey');
   var apiKey = prompt('ApiKey openexchangerates:', keyGuardada);
-  localStorage.setItem('apiKey', apiKey);
+  if (apiKey)
+  {
+    localStorage.setItem('apiKey', apiKey);
+  }
 }
 
-exportFunction(Configurar, window, {defineAs:'Configurar'});
+exportFunction(Configurar, unsafeWindow, {defineAs:'Configurar'});
 
 function OverrideShipping()
 {
@@ -31,7 +53,7 @@ function OverrideShipping()
   //location.reload(); 
 }
 
-exportFunction(OverrideShipping, window, {defineAs:'OverrideShipping'});
+exportFunction(OverrideShipping, unsafeWindow, {defineAs:'OverrideShipping'});
 
 function OverridePrecio()
 {
@@ -46,7 +68,7 @@ function OverridePrecio()
   //location.reload(); 
 }
 
-exportFunction(OverridePrecio, window, {defineAs:'OverridePrecio'});
+exportFunction(OverridePrecio, unsafeWindow, {defineAs:'OverridePrecio'});
 
 function QuitarShipping()
 {
@@ -56,7 +78,7 @@ function QuitarShipping()
   //location.reload(); 
 }
 
-exportFunction(QuitarShipping, window, {defineAs:'QuitarShipping'});
+exportFunction(QuitarShipping, unsafeWindow, {defineAs:'QuitarShipping'});
 
 function QuitarPrecio()
 {
@@ -66,7 +88,7 @@ function QuitarPrecio()
   //location.reload(); 
 }
 
-exportFunction(QuitarPrecio, window, {defineAs:'QuitarPrecio'});
+exportFunction(QuitarPrecio, unsafeWindow, {defineAs:'QuitarPrecio'});
 
 function AgregarNota()
 {
@@ -80,22 +102,22 @@ function AgregarNota()
   }
 }
 
-exportFunction(AgregarNota, window, {defineAs:'AgregarNota'});
+exportFunction(AgregarNota, unsafeWindow, {defineAs:'AgregarNota'});
 
-unsafeWindow.AgregarNota = AgregarNota;
-unsafeWindow.QuitarPrecio = QuitarPrecio;
-unsafeWindow.QuitarShipping = QuitarShipping;
-unsafeWindow.OverridePrecio = OverridePrecio;
-unsafeWindow.OverrideShipping = OverrideShipping;
-unsafeWindow.Configurar = Configurar;
+//unsafeWindow.AgregarNota = AgregarNota;
+//unsafeWindow.QuitarPrecio = QuitarPrecio;
+//unsafeWindow.QuitarShipping = QuitarShipping;
+//unsafeWindow.OverridePrecio = OverridePrecio;
+//unsafeWindow.OverrideShipping = OverrideShipping;
+//unsafeWindow.Configurar = Configurar;
 
 $('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="javascript:void(0)" onclick="window.Configurar()">Config</a></li>')
 
 var htmlARS = '<div class="notranslate u-cb convPrice vi-binConvPrc padT10 "><table width="100%">';
 //var htmlARS = '<div class="si-cnt si-cnt-eu vi-grBr vi-padn0 c-std"><table width="100%" class="si-inner">';
 htmlARS += '<tr><td colspan=3>Precios ARS - dolar a  $<span id="zombie_cotiz">0</span></td></tr>';
-htmlARS += '<tr><td>Item:</td><td align="right"><div id="zombie_precio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverridePrecio()">➕</a> <a href="javascript:void(0)" onclick="window.QuitarPrecio()">❌</a></td></tr>';
-htmlARS += '<tr><td>Envío:</td><td align="right"><div id="zombie_envio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverrideShipping()">➕</a> <a href="javascript:void(0)" onclick="window.QuitarShipping()">❌</a></td></tr>';
+htmlARS += '<tr><td>Item:</td><td align="right"><div id="zombie_precio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverridePrecio()">?</a> <a href="javascript:void(0)" onclick="window.QuitarPrecio()">?</a></td></tr>';
+htmlARS += '<tr><td>Env�o:</td><td align="right"><div id="zombie_envio">0</div></td><td><a href="javascript:void(0)" onclick="window.OverrideShipping()">?</a> <a href="javascript:void(0)" onclick="window.QuitarShipping()">?</a></td></tr>';
 htmlARS += '<tr><td>Impuesto:</td><td align="right"><div id="zombie_aduana">0</div></td><td></td></tr>';
 htmlARS += '<tr><td>Total:</td><td align="right"><div id="zombie_total">0</div></td><td></td></tr>';
 //htmlARS += '<tr><td>Total sin shipping:</td><td align="right"><div id="zombie_totalNoShip">0</div></td><td></td></tr>';
