@@ -5,7 +5,7 @@
 // @include     https://www.ebay.com/itm/*
 // @require     https://raw.githubusercontent.com/KanonZombie/userscripts/master/funciones.js
 // @require     https://code.jquery.com/jquery-2.2.4.js
-// @version     1.01
+// @version     1.02
 // @grant				GM.xmlHttpRequest
 // ==/UserScript==
 
@@ -17,7 +17,7 @@ GM.xmlHttpRequest({
   onload: function(response)
   {
      var ultimaVersion = parseFloat( /\/\/ @version     (\d{0,9}\.\d{0,9})/.exec( response.responseText)[1] )
-     if (ultimaVersion > 1.01)
+     if (ultimaVersion > 1.02)
      {
 		     console.log( "Esta disponible una nueva version del script (" + ultimaVersion +")");
 				 $('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="'+linkScript+'">update: '+ultimaVersion+'</a></li>')
