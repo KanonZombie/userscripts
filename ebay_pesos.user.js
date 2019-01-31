@@ -5,7 +5,7 @@
 // @include     https://www.ebay.com/itm/*
 // @require     https://raw.githubusercontent.com/KanonZombie/userscripts/master/funciones.js
 // @require     https://code.jquery.com/jquery-2.2.4.js
-// @version     1.02
+// @version     1.03
 // @grant				GM.xmlHttpRequest
 // ==/UserScript==
 
@@ -17,7 +17,7 @@ GM.xmlHttpRequest({
   onload: function(response)
   {
      var ultimaVersion = parseFloat( /\/\/ @version     (\d{0,9}\.\d{0,9})/.exec( response.responseText)[1] )
-     if (ultimaVersion > 1.02)
+     if (ultimaVersion > 1.03)
      {
 		     console.log( "Esta disponible una nueva version del script (" + ultimaVersion +")");
 				 $('#gh-eb').append('<li id="gh-cart22" class="gh-eb-li rt"><a href="'+linkScript+'">update: '+ultimaVersion+'</a></li>')
@@ -155,13 +155,22 @@ htmlBuscaValue += '</table></div>';
 
 $('#scandal100562').before(htmlBuscaValue)
 
+var timer = null;
+
 $( "#target" ).keyup(function() {
-  console.log( "Handler for .keypress() called." );
-  BuscarValue( this.value );
+
+  if (timer)
+  {
+    clearTimeout(timer);
+  }
+
+  timer = setTimeout(function() {
+      BuscarEnPriceCharting( $('#target').val() )
+  }, 500);
 });
 
 
-function BuscarValue( criterio )
+function BuscarEnGameValueNow( criterio )
 {
   GM.xmlHttpRequest({
     method: "GET",
@@ -187,11 +196,47 @@ function BuscarValue( criterio )
       }
       else
       { 
-			  console.log( "encontrado" );
+			  console.log( "encontrado (" + response.finalUrl + ")" );
         //console.log( response );
 				MostrarEncontrado( response.responseText );
       }
     }
+  });
+}
+
+function BuscarEnPriceCharting( criterio )
+{
+  console.log( "Handler for .keypress() called." );
+
+  GM.xmlHttpRequest({
+    method: "GET",
+    url: "https://www.pricecharting.com/search-products?type=videogames&q="+criterio,
+    timeout: 1000,
+    onload: function(response)
+    {
+      $('#resultadoBusqueda').html('');
+
+      if ( response.finalUrl.indexOf( "pricecharting.com/search-products?" )>0 )
+      {
+
+        var parsed  = $.parseHTML(response.responseText); 
+        parsed = $('<div />').append(parsed);
+
+        
+        parsed.find('#games_table').find('tbody').find('tr').each( function( indiceFila, valorFila )
+                                         {
+                                            var link = valorFila.firstElementChild.firstElementChild;
+                                            var enlace = "http://gamevaluenow.com/" + link.href.replace(/https:\/\/www.ebay.com\//g,'') ;
+                                            var enlace = link.href;
+                                            var titulo = link.innerText.trim() + ' (' + valorFila.childNodes[5].firstElementChild.innerText.trim() + ')';
+																		        $('#resultadoBusqueda').append( '<a href="'+enlace+'" target="_blank">'+titulo+'</a><br/>' );
+                                         });
+      }
+      else
+      { 
+				MostrarEncontradoPriceCharting( response.responseText );
+      }
+    },
   });
 }
 
@@ -205,6 +250,27 @@ function MostrarEncontrado( fuente )
   var match = /loosePrice = (parseFloat\('\d+?\.\d+?'\))/.exec( fuente );
   precio = eval( match[1] );
   $('#resultadoBusqueda').append( 'Loose: ' + precio + '</br>' );
+}
+
+function MostrarEncontradoPriceCharting( fuente )
+{
+  $('#resultadoBusqueda').html('');
+
+  var matchTit = /<h1 id="product_name" class="chart_title" title="(\d+)">\s+(.+?)\s+</.exec( fuente );
+  $('#resultadoBusqueda').append( matchTit[2] + '</br>');
+	
+  $('#resultadoBusqueda').append( 'Loose: ' + ExtraerPrecioPriceCharting( fuente, 'used_price' ) + '</br>' );
+  $('#resultadoBusqueda').append( 'Completo: ' + ExtraerPrecioPriceCharting( fuente, 'complete_price' ) + '</br>' );
+  $('#resultadoBusqueda').append( 'Caja: ' + ExtraerPrecioPriceCharting( fuente, 'box_only_price' ) + '</br>' );
+  $('#resultadoBusqueda').append( 'Manual: ' + ExtraerPrecioPriceCharting( fuente, 'manual_only_price' ) + '</br>' );
+}
+
+function ExtraerPrecioPriceCharting( fuente, clave )
+{
+  var patron = '<td id="' + clave + '">\\s+<span class="price js-price">\\s+\\$(\\d+?\\.\\d+?)\\s'
+  var match =fuente.match(new RegExp( patron, 'i'));
+  precio = FormatearImporte( eval( match[1] ) );
+  return precio
 }
 
 function AplicarPrecio()
