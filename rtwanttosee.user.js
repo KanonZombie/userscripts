@@ -8,4 +8,4 @@
 // ==/UserScript==
 
 
-$('#rating_widget_modal').css('display', 'block')
+$('#rating_widget_modal').css('display', 'inline-table')
