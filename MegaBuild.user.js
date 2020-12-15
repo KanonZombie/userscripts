@@ -4,7 +4,6 @@
 // @version     0.1b
 // @include     https://newautobuild.zoologicnet.com.ar/*
 // @require     https://code.jquery.com/jquery-2.2.4.js
-// @version     1.03
 // @grant		    GM.xmlHttpRequest
 // ==/UserScript==
 
@@ -19,7 +18,7 @@ if (  window.location.href.indexOf( "/AutobuildEstado/VerAutobuild/" ) > 0 )
 {
   var nroCorrida = window.location.href.match(/\/AutobuildEstado\/VerAutobuild\/([0-9]*)/)[1];
   
-  $('.contGral > h4:nth-child(6)').append( '<div><button id="Memorizar" class="row btn colorcorrida text-white bancodeprueba" onclick="localStorage.setItem(\'nroCorrida\', ' + nroCorrida + ');">Memorizar</button></div>' );
+  $('.contGral > h4:nth-child(6)').append( '<div><button id="Memorizar" class="row btn colorcorrida text-white bancodeprueba" onclick="localStorage.setItem(\'MegaBuild_nroCorrida\', ' + nroCorrida + ');">Memorizar</button></div>' );
   
   $(document).ready(function() 
                     { 
@@ -39,9 +38,9 @@ if (  window.location.href.indexOf( "/AutobuildEstado/VerAutobuild/" ) > 0 )
 
 if (  window.location.href.indexOf( "Home/Index" ) > 0 )
 {
-  var nroCorrida = localStorage.getItem('nroCorrida');
+  var nroCorrida = localStorage.getItem('MegaBuild_nroCorrida');
   
-  if ( nroCorrida !== '' )
+  if ( nroCorrida )
   {
 	  $('li.ic2:nth-child(2) > a:nth-child(1)').attr("href", "/AutobuildEstado/VerAutobuild/" + nroCorrida);
   }
@@ -49,7 +48,7 @@ if (  window.location.href.indexOf( "Home/Index" ) > 0 )
   $('li.ic2:nth-child(4) > a:nth-child(1)').attr("href", "/Maquina/Index");
 }
 
-if (  window.location.href.indexOf( "AutobuildEstado/ActivosBancoPrueb?a" ) > 0 )
+if (  window.location.href.indexOf( "AutobuildEstado/ActivosBancoPrueba" ) > 0 )
 {
   var grillaOld = $('#grilla').clone();
   var navOld = $('#cuerpo > nav:nth-child(2)').clone();
@@ -84,7 +83,7 @@ if (  window.location.href.indexOf( "Maquina/Index" ) > 0 )
 {
 	var filas = $('.tabla-detalles > tbody:nth-child(1) > tr')
 
-  let MejorBP_Procesos = new Map();
+  let MegaBuild_Procesos = new Map();
   
   for ( i=1; i<filas.length; i++ )
   {
@@ -116,7 +115,7 @@ if (  window.location.href.indexOf( "Maquina/Index" ) > 0 )
       var nombrePC = filas[i].cells[1].textContent.trim().toUpperCase();
       var detalleProceso = contenido + " perteneciente a " + usuarioDelBP.trim().toUpperCase() ;
   
-      MejorBP_Procesos.set( nombrePC, detalleProceso );
+      MegaBuild_Procesos.set( nombrePC, detalleProceso );
       
     }
   }
@@ -126,12 +125,12 @@ if (  window.location.href.indexOf( "Maquina/Index" ) > 0 )
   //.clear();
   //.size;
 
-  var oldProcesos = new Map(JSON.parse( localStorage.getItem('MejorBP_Procesos') ));
+  var oldProcesos = new Map(JSON.parse( localStorage.getItem('MegaBuild_Procesos') ));
 
   if ( oldProcesos )
   {
 
-    for (let [key, value] of MejorBP_Procesos)
+    for (let [key, value] of MegaBuild_Procesos)
     {
       var estadoAnterior = oldProcesos.get( key );
       if ( !estadoAnterior )
@@ -152,7 +151,7 @@ if (  window.location.href.indexOf( "Maquina/Index" ) > 0 )
     }
 	}
 
-  localStorage.setItem('MejorBP_Procesos', JSON.stringify(Array.from(MejorBP_Procesos.entries())) );
+  localStorage.setItem('MegaBuild_Procesos', JSON.stringify(Array.from(MegaBuild_Procesos.entries())) );
 
   setInterval( function() { location.reload() }, 30000 ) ;
 }
