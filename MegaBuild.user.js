@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Mega Build
 // @namespace   Zombie
-// @version     0.1
+// @version     0.2
 // @updateURL   https://github.com/KanonZombie/userscripts/raw/master/MegaBuild.user.js
 // @include     https://newautobuild.zoologicnet.com.ar/*
 // @require     https://code.jquery.com/jquery-2.2.4.js
@@ -54,6 +54,8 @@ if (  window.location.href.indexOf( "Home/Index" ) > 0 )
 
 if (  window.location.href.indexOf( "AutobuildEstado/ActivosBancoPrueba" ) > 0 )
 {
+  ColorearFilas( "tr.row" );
+
   var grillaOld = $('#grilla').clone();
   var navOld = $('#cuerpo > nav:nth-child(2)').clone();
   var tituloOld = $('.subtitulo').clone();
@@ -205,4 +207,23 @@ function CheckCambiosProcesos()
 
         } // fin callback
   	});
+}
+
+function ColorearFilas( selectorCSS )
+{
+  var filas = $( selectorCSS );
+  for ( i=1; i<filas.length; i++ )
+  {
+    //style="background-color: #7EF584"
+    var usuario2 = filas[i].cells[6].firstElementChild.src;
+    if ( usuario2.indexOf( 'error.png' ) > 0 )
+    {
+      $(filas[i]).css("background-color", "#FFa6a6");
+    }
+
+    if ( usuario2.indexOf( 'ok.png' ) > 0 )
+    {
+      $(filas[i]).css("background-color", "#A6FFA6");
+    }
+  }
 }
